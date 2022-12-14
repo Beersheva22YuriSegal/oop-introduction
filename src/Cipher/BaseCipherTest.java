@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test;
 class BaseCipherTest {
 
 	@Test
-	void baiseCipherTest() {
-		BaseCipher basecipher = new BaseCipher(8);
-		assertEquals(98765, basecipher.decipher(basecipher.cipher(98765)));
+	void baseCipherTest() {
+		BaseCipher basecipher = new BaseCipher(25);
+		assertEquals(123456, basecipher.decipher(basecipher.cipher(123456)));
 		
 		BaseCipher baseCipher = new BaseCipher(3);
 		String bobs = baseCipher.cipher(123);
