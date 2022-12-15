@@ -20,22 +20,41 @@ class ShapeTests {
 		displayStrings(rectangle.presentation(20));
 	}
 
-	private void displayStrings(String strings[]) {
-		for (String str : strings) {
-			System.out.println(str);
-		}
-	}
 
 	@Test
+	@Disabled
 	void leftTriangleTest() {
 		SquareLeftTriangle triangle = new SquareLeftTriangle(20);
 		displayStrings(triangle.presentation(10));
 	}
 
 	@Test
+	@Disabled
 	void rightTriangleTest() {
 		SquareRightTriangle triangle = new SquareRightTriangle(20);
 		displayStrings(triangle.presentation(10));
 	}
+	
+	@Test
+	
+	void CanvasTest() {
+		Shape rectangle = new Rectangle(10, 30);
+		Shape square = new Square(20);
+		Shape squareLeftTriangle = new SquareLeftTriangle(10);
+		Shape squareRightTriangle = new SquareRightTriangle(15);
+		Shape[] shapes = {rectangle, square, squareRightTriangle, squareLeftTriangle};
+		
+		Canvas canvas = new Canvas(10, 7, shapes);
+		canvas.setMargin(3);
+		displayStrings(canvas.presentation(5));
+		canvas.setMargin(4);
+		canvas.setDirection("column"); 
+		displayStrings(canvas.presentation(5));
+	}
 
+	private void displayStrings(String strings[]) {
+		for (String str : strings) {
+			System.out.println(str);
+		}
+	}
 }

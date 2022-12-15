@@ -1,12 +1,11 @@
 package telran.shapes;
 
-public class Rectangle extends Shape{
-	
-	
+public class Rectangle extends Shape {
+
 	public Rectangle(int width, int height) {
 		super(width, height);
 	}
-	
+
 	public String[] presentation(int offset) {
 		int height = getHeight();
 		String[] res = new String[height];
@@ -19,15 +18,13 @@ public class Rectangle extends Shape{
 		}
 		return res;
 	}
+
 	private String getMiddleLine(int offset) {
-		
+
 		return getOffset(offset) + symbol + getOffset(getWidth() - 2) + symbol;
 	}
+
 	protected String getLine(int offset) {
 		return getOffset(offset) + symbol.repeat(getWidth());
-	}
-	private String getOffset(int offset) {
-		
-		return " ".repeat(offset);
 	}
 }
