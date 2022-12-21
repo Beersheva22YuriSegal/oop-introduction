@@ -8,6 +8,10 @@ import org.junit.jupiter.api.Test;
 import telran.shapes.*;
 
 class ShapeTests {
+	Canvas canvas = new Canvas(10, 20,
+			new Shape[] { new Rectangle(10, 3), new Square(10), new SquareLeftTriangle(10) });
+	Shape[] shapes = { new Rectangle(10, 3), new Square(10), new SquareLeftTriangle(10), new SquareRightTriangle(10),
+			canvas, new Square(10) };
 
 	@Test
 	@Disabled
@@ -20,6 +24,11 @@ class ShapeTests {
 		displayStrings(rectangle.presentation(20));
 	}
 
+	private void displayStrings(String strings[]) {
+		for (String str : strings) {
+			System.out.println(str);
+		}
+	}
 
 	@Test
 	@Disabled
@@ -34,27 +43,22 @@ class ShapeTests {
 		SquareRightTriangle triangle = new SquareRightTriangle(20);
 		displayStrings(triangle.presentation(10));
 	}
-	
+
 	@Test
-	
-	void CanvasTest() {
-		Shape rectangle = new Rectangle(10, 30);
-		Shape square = new Square(20);
-		Shape squareLeftTriangle = new SquareLeftTriangle(10);
-		Shape squareRightTriangle = new SquareRightTriangle(15);
-		Shape[] shapes = {rectangle, square, squareRightTriangle, squareLeftTriangle};
-		
-		Canvas canvas = new Canvas(10, 7, shapes);
+	@Disabled
+	void canvasInRowTest() {
+		Canvas canvas = new Canvas(10, 4, shapes);
 		canvas.setMargin(3);
-		displayStrings(canvas.presentation(5));
-		canvas.setMargin(4);
-		canvas.setDirection("column"); 
-		displayStrings(canvas.presentation(5));
+		displayStrings(canvas.presentation(2));
 	}
 
-	private void displayStrings(String strings[]) {
-		for (String str : strings) {
-			System.out.println(str);
-		}
+	@Test
+	@Disabled
+	void canvasInColumnTest() {
+		Canvas canvas = new Canvas(10, 4, shapes);
+		canvas.setDirection("column");
+		this.canvas.setDirection("column");
+		canvas.setMargin(1);
+		displayStrings(canvas.presentation(2));
 	}
 }
