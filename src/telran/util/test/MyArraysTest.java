@@ -2,6 +2,7 @@ package telran.util.test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.function.Predicate;
 
@@ -12,6 +13,8 @@ import telran.util.MyArrays;
 import telran.util.comparator.*;
 
 class MyArraysTest {
+	static final int N_NUMBERS = 10000;
+	static final int N_RUNS = 1000;
 	Integer[] numbers = { 13, 2, -8, 47, 100, 10, -7, 7 };
 	String[] strings = { "ab", "abm", "abmb", "abmbc" };
 	Comparator<Integer> evenOddComparator = this::evenOddCompare;
@@ -76,13 +79,33 @@ class MyArraysTest {
 	
 	@Test
 	void removeRepeatedTest() {
-		Integer initialInt[] = {1, 1, 1, 3, 7, 3, 9, 1};
-		Integer expectedInt[] = {1, 3, 7, 9};
+		Integer[] initialInt = {1, 1, 1, 3, 7, 3, 9, 1};
+		Integer[] expectedInt = {1, 3, 7, 9};
 		String[] initialStr = {"ab", "b", "ab", "bc", "b", "ac", "ac" };
 		String[] expectedStr = {"ab", "b", "bc", "ac" };
 		
 		assertArrayEquals(MyArrays.removeRepeated(initialInt), expectedInt);
 		assertArrayEquals(MyArrays.removeRepeated(initialStr), expectedStr);
+	}
+	
+	@Test
+	void joinFunctionalTest() {
+		String expected = "13,2,-8,47,100,10,-7,7";
+		assertEquals(expected, MyArrays.join(numbers, ","));
+	}
+	
+	@Test
+	void joinPerformanceTest() {
+		Integer[] largeArray = getLargeNumbersArray();
+		for (int i = 0; i < N_RUNS; i++) {
+			MyArrays.join(largeArray, ",");
+		}
+	}
+	
+	Integer[] getLargeNumbersArray() {
+		Integer[] res = new Integer[N_NUMBERS];
+		Arrays.fill(res, 1000);
+		return res;
 	}
 	
 	

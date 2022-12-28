@@ -46,53 +46,65 @@ public class MyArrays {
 
 	}
 
-	public static <T> T[] filter(T[] array, Predicate<T> predicate) {
-		int countPredicate = getCountPredicate(array, predicate);
-		T[] res = Arrays.copyOf(array, countPredicate);
+	public static<T> T[] filter(T[] array, Predicate<T> predicate) {
+		T[] res = Arrays.copyOf(array, array.length);
 		int index = 0;
-		for (T element : array) {
-			if (predicate.test(element)) {
+		for(T element: array) {
+			if(predicate.test(element)) {
 				res[index++] = element;
 			}
-		}
-
-		return res;
-	}
-
-	private static <T> int getCountPredicate(T[] array, Predicate<T> predicate) {
-		int res = 0;
-		for (T element : array) {
-			if (predicate.test(element)) {
-				res++;
-			}
-		}
-		return res;
-	}
-
-	public static <T> T[] removeIf(T[] array, Predicate<T> predicate) {
-		return filter(array, predicate.negate());
-
-	}
-
-	public static <T> T[] removeRepeated(T[] array) {
-		T[] res = Arrays.copyOf(array, array.length);
-		Arrays.fill(res, null);
-		int index = 0;
-		while (array.length > 0) {
-			res[index++] = array[0];
-			array = removeIf(array, a -> contains(res, a));
 		}
 		return Arrays.copyOf(res, index);
 	}
 
-	public static <T> boolean contains(T[] array, T pattern) {
-		boolean res = false;
-		int i = 0;
-		while (!res && i < array.length) {
-			if (array[i] == pattern) {
-				res = true;
+	public static <T> T[] removeIf(T[] array, Predicate<T> predicate) {
+		return filter(array, predicate.negate());
+	}
+
+	public static <T> T[] removeRepeated(T[] array) {
+		final Object[] helper = new Object[array.length];
+		final int[] index = {0};
+		return removeIf(array, element -> {
+			boolean res = true;
+			if (!contains(helper, element)) {
+				helper[index[0]++] = element;
+				res = false;
 			}
-			i++;
+			return res;
+		});
+	}
+
+	public static <T> boolean contains(T[] array, T pattern) {
+		int index = 0;
+		while(index < array.length && !isEqual(array[index], pattern)) {
+			index++;
+		}
+		return index < array.length;
+	}
+	
+	private static boolean isEqual(Object element, Object pattern) {
+		return element == null ? element == pattern : element.equals(pattern);
+	}
+
+	public static <T> String join(T[] array, String delimeter) {
+		String res = "";
+		if (array.length > 0) {
+			StringBuilder builder = new StringBuilder(array[0].toString());
+			for (int i = 1; i < array.length; i++) {
+				builder.append(delimeter).append(array[i]);
+			}
+			res = builder.toString();
+		}
+		return res;
+	}
+	
+	public static <T> String joinString(T[] array, String delimeter) {
+		String res = "";
+		if (array.length > 0) {
+			res = array[0].toString();
+			for (int i = 1; i < array.length; i++) {
+				res += delimeter + array[i];
+			}
 		}
 		return res;
 	}
