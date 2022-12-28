@@ -8,6 +8,7 @@ public class ArrayList<T> implements List<T> {
 	private static final int DEFAULT_CAPACITY = 16;
 	private T[] array;
 	private int size;
+	@SuppressWarnings("unchecked")
 	public ArrayList(int capacity) {
 		array = (T[]) new Object[capacity];
 	}
@@ -40,8 +41,7 @@ public class ArrayList<T> implements List<T> {
 
 	@Override
 	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
+		return size < 1;
 	}
 
 	@Override
@@ -51,8 +51,8 @@ public class ArrayList<T> implements List<T> {
 
 	@Override
 	public boolean contains(T pattern) {
-		// TODO Auto-generated method stub
-		return false;
+
+		return indexOf(pattern) > -1;
 	}
 
 	@Override
@@ -63,38 +63,59 @@ public class ArrayList<T> implements List<T> {
 
 	@Override
 	public void add(int index, T element) {
-		// TODO Auto-generated method stub
+		isUsableIndex(index);
+		if (size == array.length) {
+			reallocate();
+		}
+		System.arraycopy(array, index, array, index + 1, size - index);
+		array[index] = element;
+		size++;
 
 	}
 
 	@Override
 	public T remove(int index) {
-		// TODO Auto-generated method stub
 		return null;
+
 	}
 
 	@Override
 	public int indexOf(T pattern) {
-		// TODO Auto-generated method stub
-		return 0;
+		int i = 0;
+		while (i < size && !isEqual(array[i], pattern)) {
+			i++;
+		}
+		return i < size ? i : -1;
 	}
 
+	private static <T> boolean isEqual(T element, T pattern) {
+		return element == null ? element == pattern : element.equals(pattern);
+	}
+	
 	@Override
 	public int lastIndexOf(T pattern) {
-		// TODO Auto-generated method stub
-		return 0;
+		int res = -1;
+		for (int i = 0; i < size; i++) {
+			if(isEqual(array[i], pattern)) {
+			res = i;
+			}
+		}
+		return res;
 	}
 
 	@Override
 	public T get(int index) {
-		// TODO Auto-generated method stub
-		return null;
+		return isUsableIndex(index) ? array[index] : null;
 	}
 
 	@Override
 	public void set(int index, T element) {
-		// TODO Auto-generated method stub
-
+		if (isUsableIndex(index)) {
+			array[index] = element;
+		}
+	}
+	private boolean isUsableIndex(int index) {
+		return index < size && index > -1;
 	}
 
 }
