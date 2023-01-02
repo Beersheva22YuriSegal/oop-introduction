@@ -1,20 +1,39 @@
 package telran.util;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.function.Predicate;
 
 public class ArrayList<T> implements List<T> {
-
-	private static final int DEFAULT_CAPACITY = 16;
+	static final int DEFAULT_CAPACITY = 16;
 	private T[] array;
 	private int size;
+
+	private class ArrayListIterator implements Iterator<T> {
+//TODO
+		@Override
+		public boolean hasNext() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public T next() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+	}
+
 	@SuppressWarnings("unchecked")
 	public ArrayList(int capacity) {
 		array = (T[]) new Object[capacity];
 	}
+
 	public ArrayList() {
 		this(DEFAULT_CAPACITY);
 	}
+
 	@Override
 	public boolean add(T element) {
 		if (size == array.length) {
@@ -23,29 +42,44 @@ public class ArrayList<T> implements List<T> {
 		array[size++] = element;
 		return true;
 	}
+
 	private void reallocate() {
 		array = Arrays.copyOf(array, array.length * 2);
 	}
 
 	@Override
 	public boolean remove(T pattern) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean res = false;
+		int index = indexOf(pattern);
+		if (index > -1) {
+			res = true;
+			remove(index);
+		}
+		return res;
 	}
 
 	@Override
 	public boolean removeIf(Predicate<T> predicate) {
-		// TODO Auto-generated method stub
-		return false;
+		// FIXME - write implementation of O[N]. Hint working with only indexes
+		int oldSize = size;
+		for (int i = size - 1; i >= 0; i--) {
+			if (predicate.test(array[i])) {
+				remove(i);
+			}
+		}
+		return oldSize > size;
+
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return size < 1;
+
+		return size == 0;
 	}
 
 	@Override
 	public int size() {
+
 		return size;
 	}
 
@@ -57,13 +91,17 @@ public class ArrayList<T> implements List<T> {
 
 	@Override
 	public T[] toArray(T[] ar) {
-		// TODO Auto-generated method stub
-		return null;
+		if (ar.length < size) {
+			ar = Arrays.copyOf(array, size);
+		}
+		System.arraycopy(array, 0, ar, 0, size);
+		Arrays.fill(ar, size, ar.length, null);
+		return ar;
 	}
 
 	@Override
 	public void add(int index, T element) {
-		isUsableIndex(index);
+		checkIndex(index, true);
 		if (size == array.length) {
 			reallocate();
 		}
@@ -75,47 +113,62 @@ public class ArrayList<T> implements List<T> {
 
 	@Override
 	public T remove(int index) {
-		return null;
-
-	}
-
-	@Override
-	public int indexOf(T pattern) {
-		int i = 0;
-		while (i < size && !isEqual(array[i], pattern)) {
-			i++;
-		}
-		return i < size ? i : -1;
-	}
-
-	private static <T> boolean isEqual(T element, T pattern) {
-		return element == null ? element == pattern : element.equals(pattern);
-	}
-	
-	@Override
-	public int lastIndexOf(T pattern) {
-		int res = -1;
-		for (int i = 0; i < size; i++) {
-			if(isEqual(array[i], pattern)) {
-			res = i;
-			}
-		}
+		checkIndex(index, false);
+		T res = array[index];
+		size--;
+		System.arraycopy(array, index + 1, array, index, size - index);
+		array[size] = null;
 		return res;
 	}
 
 	@Override
+	public int indexOf(T pattern) {
+		int index = 0;
+		while (index < size && !isEqual(array[index], pattern)) {
+			index++;
+		}
+		return index < size ? index : -1;
+	}
+
+	private boolean isEqual(T element, T pattern) {
+
+		return element == null ? element == pattern : element.equals(pattern);
+	}
+
+	@Override
+	public int lastIndexOf(T pattern) {
+		int index = size - 1;
+		while (index >= 0 && !isEqual(array[index], pattern)) {
+			index--;
+		}
+		return index;
+	}
+
+	@Override
 	public T get(int index) {
-		return isUsableIndex(index) ? array[index] : null;
+		checkIndex(index, false);
+		return array[index];
+	}
+
+	private void checkIndex(int index, boolean sizeIncluded) {
+		int sizeDelta = sizeIncluded ? 0 : 1;
+		if (index < 0 || index > size - sizeDelta) {
+			throw new IndexOutOfBoundsException(index);
+		}
+
 	}
 
 	@Override
 	public void set(int index, T element) {
-		if (isUsableIndex(index)) {
-			array[index] = element;
-		}
+		checkIndex(index, false);
+		array[index] = element;
+
 	}
-	private boolean isUsableIndex(int index) {
-		return index < size && index > -1;
+
+	@Override
+	public Iterator<T> iterator() {
+
+		return new ArrayListIterator();
 	}
 
 }
