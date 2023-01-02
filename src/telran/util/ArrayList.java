@@ -12,7 +12,7 @@ public class ArrayList<T> implements List<T> {
 
 	private class ArrayListIterator implements Iterator<T> {
 		int currentIndex = 0;
-		
+
 		@Override
 		public boolean hasNext() {
 			return currentIndex < size;
@@ -20,7 +20,7 @@ public class ArrayList<T> implements List<T> {
 
 		@Override
 		public T next() {
-			if(!hasNext()) {
+			if (!hasNext()) {
 				throw new NoSuchElementException();
 			}
 			return get(currentIndex++);
@@ -63,13 +63,26 @@ public class ArrayList<T> implements List<T> {
 
 	@Override
 	public boolean removeIf(Predicate<T> predicate) {
-		// FIXME - write implementation of O[N]. Hint working with only indexes
+
 		int oldSize = size;
-		for (int i = size - 1; i >= 0; i--) {
+//		for (int i = size - 1; i >= 0; i--) {
+//			if (predicate.test(array[i])) {
+//				remove(i);
+//			}
+//		}
+		int counter = 0;
+		int index = 0;
+		for (int i = 0; i < oldSize; i++) {
+			if (!predicate.test(array[i])) {
+				array[index++] = array[i];
+			}
 			if (predicate.test(array[i])) {
-				remove(i);
+				counter++;
+				size--;
 			}
 		}
+		Arrays.fill(array, counter, oldSize, null);
+		
 		return oldSize > size;
 
 	}
