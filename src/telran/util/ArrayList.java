@@ -2,6 +2,7 @@ package telran.util;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
 public class ArrayList<T> implements List<T> {
@@ -10,17 +11,19 @@ public class ArrayList<T> implements List<T> {
 	private int size;
 
 	private class ArrayListIterator implements Iterator<T> {
-//TODO
+		int currentIndex = 0;
+		
 		@Override
 		public boolean hasNext() {
-			// TODO Auto-generated method stub
-			return false;
+			return currentIndex < size;
 		}
 
 		@Override
 		public T next() {
-			// TODO Auto-generated method stub
-			return null;
+			if(!hasNext()) {
+				throw new NoSuchElementException();
+			}
+			return get(currentIndex++);
 		}
 
 	}
