@@ -5,10 +5,9 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
-public class ArrayList<T> implements List<T> {
+public class ArrayList<T> extends AbstractCollection<T> implements List<T>  {
 	static final int DEFAULT_CAPACITY = 16;
 private T [] array;
-private int size;
 private class ArrayListIterator implements Iterator<T> {
 int current = 0;
 	@Override
@@ -23,6 +22,11 @@ int current = 0;
 			throw new NoSuchElementException();
 		}
 		return array[current++];
+	}
+	
+	@Override
+	public void remove() {
+		//TODO
 	}
 	
 }
@@ -46,17 +50,6 @@ public ArrayList() {
 	}
 
 	@Override
-	public boolean remove(T pattern) {
-		boolean res = false;
-		int index = indexOf(pattern);
-		if (index > -1) {
-			res = true;
-			remove(index);
-		}
-		return res;
-	}
-
-	@Override
 	public boolean removeIf(Predicate<T> predicate) {
 		int oldSize = size;
 		int tIndex = 0;
@@ -71,20 +64,6 @@ public ArrayList() {
 		return oldSize > size;
 		
 	}
-
-	@Override
-	public boolean isEmpty() {
-		
-		return size == 0;
-	}
-
-	@Override
-	public int size() {
-		
-		return size;
-	}
-
-	
 
 	@Override
 	public T[] toArray(T[] ar) {
@@ -127,10 +106,7 @@ public ArrayList() {
 		return index < size ? index : -1;
 	}
 
-	private boolean isEqual(T element, T pattern) {
-		
-		return element == null  ? element == pattern : element.equals(pattern);
-	}
+
 	@Override
 	public int lastIndexOf(T pattern) {
 		int index = size - 1;
@@ -145,7 +121,6 @@ public ArrayList() {
 		checkIndex(index, false);
 		return array[index];
 	}
-
 	
 	@Override
 	public void set(int index, T element) {
@@ -158,5 +133,4 @@ public ArrayList() {
 		
 		return new ArrayListIterator();
 	}
-
 }
