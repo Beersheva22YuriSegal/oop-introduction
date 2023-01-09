@@ -21,7 +21,7 @@ public interface List<T> extends Collection<T>{
 	}
 	
 	
-	default public boolean remove(T pattern) {
+	default boolean remove(T pattern) {
 		boolean res = false;
 		int index = indexOf(pattern);
 		if (index > -1) {

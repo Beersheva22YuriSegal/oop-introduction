@@ -1,5 +1,6 @@
 package telran.util;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.function.*;
 
@@ -23,6 +24,8 @@ public interface Collection<T> extends Iterable<T> {
 	int size();
 	boolean contains(T pattern);
 	
+	boolean isLoop();
+	
 
 	/**
 	 * 
@@ -33,6 +36,21 @@ public interface Collection<T> extends Iterable<T> {
 	 *         that is greater than required for all elements of Collection then all
 	 *         element Collection will be put in the array and rest of memory will
 	 *         be filled by null's
+	 *         
+	 *         	T[] toArray(T[] ar);
 	 */
-	T[] toArray(T[] ar);
+	default T[] toArray(T[] array) {
+		int size = size();
+		if (array.length < size) {
+			array = Arrays.copyOf(array, size);
+		}
+		Iterator <T> it = iterator();
+		int index = 0;
+		while (it.hasNext()) {
+			array[index++] = it.next();
+		}
+		Arrays.fill(array, size, array.length, null);
+		return array;
+	}
+
 }

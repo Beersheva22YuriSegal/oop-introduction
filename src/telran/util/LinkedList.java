@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
 public class LinkedList<T> extends AbstractCollection<T> implements List<T> {
+	
 	private static class Node<T> {
 		T obj;
 		Node<T> prev;
@@ -77,6 +78,20 @@ public class LinkedList<T> extends AbstractCollection<T> implements List<T> {
 //		return oldSize > size;
 //	}
 
+//	@Override
+//	public T[] toArray(T[] ar) {
+//		if(ar.length < size) {
+//			ar = Arrays.copyOf(ar, size);
+//		}
+//		Node<T> current = head;
+//		for(int i = 0; i < size; i++) {
+//			ar[i] = current.obj;
+//			current = current.next;
+//		}
+//		Arrays.fill(ar, size, ar.length, null);
+//		return ar;
+//	}
+	
 	private void removeNode(Node<T> current) {
 		if (current == head) {
 			removeHead();
@@ -111,19 +126,6 @@ public class LinkedList<T> extends AbstractCollection<T> implements List<T> {
 		}
 	}
 
-	@Override
-	public T[] toArray(T[] ar) {
-		if(ar.length < size) {
-			ar = Arrays.copyOf(ar, size);
-		}
-		Node<T> current = head;
-		for(int i = 0; i < size; i++) {
-			ar[i] = current.obj;
-			current = current.next;
-		}
-		Arrays.fill(ar, size, ar.length, null);
-		return ar;
-	}
 
 	@Override
 	public Iterator<T> iterator() {
@@ -160,15 +162,29 @@ public class LinkedList<T> extends AbstractCollection<T> implements List<T> {
 		//sets next of element at index1 to element at index 2
 		if (index1 < index2) {
 			throw new IllegalArgumentException();
-		} 
+		}
+		Node <T> node = getNode(index1);
+		Node <T> node2 = getNode(index2);
+		node.next = node2;
 	}
 	
-	public boolean hasLoop() {
-		//TODO
+	public boolean isLoop() {
 		//method returns true if there is a loop by next reference referring to a previous element
 		//use neither "size" nor "size()"
 		//no use prev field in a Node
 		//O[N] complexity with no using collections
+		
+		boolean res = false;
+		Node<T> node1 = head;
+		Node<T> node2 = head;
+		while(!res && node2.next != null) {
+			node1 = node1.next;
+			node2 = node2.next.next;
+			if (node1 == node2) {
+				res = true;
+			}
+		}
+		return res;
 	}
 	/**************************************/
 	private Node<T> getNode(int index) {

@@ -10,6 +10,8 @@ public class ArrayList<T> extends AbstractCollection<T> implements List<T>  {
 private T [] array;
 private class ArrayListIterator implements Iterator<T> {
 int current = 0;
+boolean flag = false;
+
 	@Override
 	public boolean hasNext() {
 		
@@ -21,12 +23,17 @@ int current = 0;
 		if(!hasNext()) {
 			throw new NoSuchElementException();
 		}
+		flag = true;
 		return array[current++];
 	}
 	
 	@Override
 	public void remove() {
-		//TODO
+		if (!flag) {
+			throw new IllegalStateException();
+		}
+		ArrayList.this.remove(current - 1);
+		flag = false;
 	}
 	
 }
@@ -65,15 +72,15 @@ public ArrayList() {
 		
 	}
 
-	@Override
-	public T[] toArray(T[] ar) {
-		if(ar.length < size) {
-			ar = Arrays.copyOf(array, size);
-		}
-		System.arraycopy(array, 0, ar, 0, size);
-		Arrays.fill(ar, size, ar.length, null);
-		return ar;
-	}
+//	@Override
+//	public T[] toArray(T[] ar) {
+//		if(ar.length < size) {
+//			ar = Arrays.copyOf(array, size);
+//		}
+//		System.arraycopy(array, 0, ar, 0, size);
+//		Arrays.fill(ar, size, ar.length, null);
+//		return ar;
+//	}
 
 	@Override
 	public void add(int index, T element) {
@@ -132,5 +139,10 @@ public ArrayList() {
 	public Iterator<T> iterator() {
 		
 		return new ArrayListIterator();
+	}
+	@Override
+	public boolean isLoop() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
