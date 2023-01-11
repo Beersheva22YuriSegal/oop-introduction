@@ -1,30 +1,47 @@
 package telran.util.test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import telran.util.*;
 
-public class LinkedListTest extends ListTest{
+class LinkedListTest extends ListTest{
+	LinkedList<Integer> linkedList;
 	@BeforeEach
-	@Override
+	@Override 
 	void setUp() throws Exception {
 		collection = new LinkedList<>();
 		super.setUp();
+		linkedList = (LinkedList<Integer>)list;
 	}
-	
 	@Test
-	void isLoopTest() {
-		LinkedList <Integer> list = (LinkedList <Integer>) collection;
-		assertFalse(list.isLoop());
-		list.setNext(4, 2);
-		assertTrue(list.isLoop());
-		assertThrowsExactly(IllegalArgumentException.class, () -> list.setNext(0, 2));
+	void isLoopTestEven() {
+		list.add(300);
+		assertFalse(linkedList.hasLoop());
+		linkedList.setNext(list.size() - 1, 0);
+		assertTrue(linkedList.hasLoop());
+		
+	}
+	@Test
+	void isLoopTestOdd() {
+		assertFalse(linkedList.hasLoop());
+		linkedList.setNext(list.size() - 1, 0);
+		assertTrue(linkedList.hasLoop());
+		
+	}
+	@Test
+	void isLoopNoOneNode() {
+		LinkedList<Integer> linkedList = new LinkedList<>();
+		assertFalse(linkedList.hasLoop());
+		linkedList.add(10);
+		assertFalse(linkedList.hasLoop());
+		linkedList.setNext(0, 0);
+		assertTrue(linkedList.hasLoop());
 	}
 	
-
+	
 }

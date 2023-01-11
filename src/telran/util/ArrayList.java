@@ -5,53 +5,57 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
-public class ArrayList<T> extends AbstractCollection<T> implements List<T>  {
+public class ArrayList<T> extends AbstractCollection<T> implements List<T> {
 	static final int DEFAULT_CAPACITY = 16;
-private T [] array;
-private class ArrayListIterator implements Iterator<T> {
-int current = 0;
-boolean flag = false;
+	private T[] array;
 
-	@Override
-	public boolean hasNext() {
-		
-		return current < size;
+	private class ArrayListIterator implements Iterator<T> {
+		int current = 0;
+		 boolean flNext;
+
+		@Override
+		public boolean hasNext() {
+
+			return current < size;
+		}
+
+		@Override
+		public T next() {
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
+			flNext  = true;
+			return array[current++];
+		}
+		@Override
+		public void remove() {
+			if (!flNext) {
+				throw new IllegalStateException();
+			}
+			ArrayList.this.remove(--current);
+			flNext = false;
+		}
+
 	}
 
-	@Override
-	public T next() {
-		if(!hasNext()) {
-			throw new NoSuchElementException();
-		}
-		flag = true;
-		return array[current++];
+	@SuppressWarnings("unchecked")
+	public ArrayList(int capacity) {
+		array = (T[]) new Object[capacity];
 	}
-	
-	@Override
-	public void remove() {
-		if (!flag) {
-			throw new IllegalStateException();
-		}
-		ArrayList.this.remove(current - 1);
-		flag = false;
+
+	public ArrayList() {
+		this(DEFAULT_CAPACITY);
 	}
-	
-}
-@SuppressWarnings("unchecked")
-public ArrayList(int capacity) {
-	array = (T[])new Object[capacity];
-}
-public ArrayList() {
-	this(DEFAULT_CAPACITY);
-}
+
 	@Override
 	public boolean add(T element) {
-		if(size == array.length) {
+		if (size == array.length) {
 			reallocate();
 		}
 		array[size++] = element;
 		return true;
 	}
+
 	private void reallocate() {
 		array = Arrays.copyOf(array, array.length * 2);
 	}
@@ -69,18 +73,14 @@ public ArrayList() {
 		}
 		Arrays.fill(array, size, oldSize, null);
 		return oldSize > size;
-		
+
 	}
 
-//	@Override
-//	public T[] toArray(T[] ar) {
-//		if(ar.length < size) {
-//			ar = Arrays.copyOf(array, size);
-//		}
-//		System.arraycopy(array, 0, ar, 0, size);
-//		Arrays.fill(ar, size, ar.length, null);
-//		return ar;
-//	}
+	
+
+	
+
+	
 
 	@Override
 	public void add(int index, T element) {
@@ -107,17 +107,16 @@ public ArrayList() {
 	@Override
 	public int indexOf(T pattern) {
 		int index = 0;
-		while(index < size && !isEqual(array[index], pattern)) {
+		while (index < size && !isEqual(array[index], pattern)) {
 			index++;
 		}
 		return index < size ? index : -1;
 	}
 
-
 	@Override
 	public int lastIndexOf(T pattern) {
 		int index = size - 1;
-		while(index >= 0 && !isEqual(array[index], pattern)) {
+		while (index >= 0 && !isEqual(array[index], pattern)) {
 			index--;
 		}
 		return index;
@@ -128,21 +127,18 @@ public ArrayList() {
 		checkIndex(index, false);
 		return array[index];
 	}
-	
+
 	@Override
 	public void set(int index, T element) {
 		checkIndex(index, false);
 		array[index] = element;
 
 	}
+
 	@Override
 	public Iterator<T> iterator() {
-		
+
 		return new ArrayListIterator();
 	}
-	@Override
-	public boolean isLoop() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+
 }

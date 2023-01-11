@@ -6,12 +6,11 @@ import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
 public class LinkedList<T> extends AbstractCollection<T> implements List<T> {
-	
 	private static class Node<T> {
 		T obj;
 		Node<T> prev;
 		Node<T> next;
-
+		
 		Node(T obj) {
 			this.obj = obj;
 		}
@@ -20,18 +19,19 @@ public class LinkedList<T> extends AbstractCollection<T> implements List<T> {
 	private Node<T> head;
 	private Node<T> tail;
 
+
 	private class LinkedListIterator implements Iterator<T> {
 		Node<T> current = head;
 		boolean flNext = false;
-		
 		@Override
 		public boolean hasNext() {
+			
 			return current != null;
 		}
 
 		@Override
 		public T next() {
-			if (!hasNext()) {
+			if(!hasNext()) {
 				throw new NoSuchElementException();
 			}
 			T res = current.obj;
@@ -45,7 +45,7 @@ public class LinkedList<T> extends AbstractCollection<T> implements List<T> {
 			if(!flNext) {
 				throw new IllegalStateException();
 			}
-			Node <T> removedNode = current == null ? tail : current.prev;
+			Node<T> removedNode = current == null ? tail : current.prev;
 			removeNode(removedNode);
 			flNext = false;
 		}
@@ -64,34 +64,7 @@ public class LinkedList<T> extends AbstractCollection<T> implements List<T> {
 		size++;
 		return true;
 	}
-	
-//	@Override
-//	public boolean removeIf(Predicate<T> predicate) {
-//		int oldSize = size;
-//		Node<T> current = head;
-//		while (current != null) {
-//			if (predicate.test(current.obj)) {
-//				removeNode(current);
-//			}
-//			current = current.next;
-//		}
-//		return oldSize > size;
-//	}
 
-//	@Override
-//	public T[] toArray(T[] ar) {
-//		if(ar.length < size) {
-//			ar = Arrays.copyOf(ar, size);
-//		}
-//		Node<T> current = head;
-//		for(int i = 0; i < size; i++) {
-//			ar[i] = current.obj;
-//			current = current.next;
-//		}
-//		Arrays.fill(ar, size, ar.length, null);
-//		return ar;
-//	}
-	
 	private void removeNode(Node<T> current) {
 		if (current == head) {
 			removeHead();
@@ -100,14 +73,14 @@ public class LinkedList<T> extends AbstractCollection<T> implements List<T> {
 		} else {
 			removeMiddle(current);
 		}
-		size--;
+		size--;	
 	}
 
 	private void removeMiddle(Node<T> current) {
 		Node<T> prev = current.prev;
 		Node<T> next = current.next;
 		prev.next = next;
-		next.prev = prev;
+		next.prev = prev;	
 	}
 
 	private void removeTail() {
@@ -117,7 +90,7 @@ public class LinkedList<T> extends AbstractCollection<T> implements List<T> {
 	}
 
 	private void removeHead() {
-		if(head.next == null) {	 //if(size == 1) {
+		if (head.next == null) {
 			head = tail = null;
 		} else {
 			Node<T> next = head.next;
@@ -126,9 +99,9 @@ public class LinkedList<T> extends AbstractCollection<T> implements List<T> {
 		}
 	}
 
-
 	@Override
 	public Iterator<T> iterator() {
+		
 		return new LinkedListIterator();
 	}
 
@@ -142,7 +115,6 @@ public class LinkedList<T> extends AbstractCollection<T> implements List<T> {
 		} else {
 			addMiddle(index, element);
 		}
-
 	}
 
 	private void addMiddle(int index, T element) {
@@ -156,37 +128,30 @@ public class LinkedList<T> extends AbstractCollection<T> implements List<T> {
 		size++;
 	}
 	
-	/**************************************/
+	/************************************************************************************/
 	//Comments only for LinkedList task of loop existence
 	public void setNext(int index1, int index2) {
-		//sets next of element at index1 to element at index 2
+		//sets next of element at index1 to element at index2
 		if (index1 < index2) {
 			throw new IllegalArgumentException();
 		}
-		Node <T> node = getNode(index1);
-		Node <T> node2 = getNode(index2);
-		node.next = node2;
+		getNode(index1).next = getNode(index2);
 	}
-	
-	public boolean isLoop() {
-		//method returns true if there is a loop by next reference referring to a previous element
-		//use neither "size" nor "size()"
-		//no use prev field in a Node
-		//O[N] complexity with no using collections
+	public boolean hasLoop() {
 		
-		boolean res = false;
-		Node<T> node1 = head;
-		Node<T> node2 = head;
-		while(!res && node2.next != null) {
-			node1 = node1.next;
-			node2 = node2.next.next;
-			if (node1 == node2) {
-				res = true;
-			}
+		Node<T> runner = head;
+		Node<T> fastRunner = head;
+		boolean res = runner == fastRunner && runner != head;
+		while (fastRunner != null && fastRunner.next != null && !res) {
+			runner = runner.next;
+			fastRunner = fastRunner.next.next;
+			res = runner == fastRunner;
 		}
 		return res;
 	}
-	/**************************************/
+	
+	/*********************************************************************************************/
+
 	private Node<T> getNode(int index) {
 		
 		return index < size / 2 ? getNodeFromLeft(index) : getNodeFromRight(index);
@@ -213,27 +178,27 @@ public class LinkedList<T> extends AbstractCollection<T> implements List<T> {
 		node.next = head;
 		head.prev = node;
 		head = node;
-		size++;
-		
+		size++;	
 	}
 
 	@Override
 	public T remove(int index) {
 		checkIndex(index, false);
 		Node<T> removedNode = getNode(index);
-//		if (removedNode == null) {
-//			throw new IllegalStateException("removedNode in method remove is null");
-//		}
+		
+		if (removedNode == null) {
+			throw new IllegalStateException("removedNode in method remove is null");
+		}
+		T res = removedNode.obj;
 		removeNode(removedNode);
-		return removedNode.obj;
+		return res;
 	}
-
 
 	@Override
 	public int indexOf(T pattern) {
-		int index = 0;
 		Node<T> current = head;
-		while (current != null && !isEqual(current.obj, pattern)) {
+		int index = 0;
+		while(current != null && !isEqual(current.obj, pattern)) {
 			index++;
 			current = current.next;
 		}
@@ -242,11 +207,11 @@ public class LinkedList<T> extends AbstractCollection<T> implements List<T> {
 
 	@Override
 	public int lastIndexOf(T pattern) {
-		int index = size - 1;
 		Node<T> current = tail;
-		while(current != null && !isEqual(current.obj, pattern)) {	
-		current = current.prev;
-		index--;
+		int index = size - 1;
+		while(current != null && !isEqual(current.obj, pattern)) {
+			index--;
+			current = current.prev;
 		}
 		return index;
 	}
