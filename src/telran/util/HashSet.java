@@ -2,6 +2,7 @@ package telran.util;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class HashSet<T> extends AbstractCollection<T> implements Set<T> {
 	private static final int DEFAULT_TABLE_SIZE = 16;
@@ -9,21 +10,39 @@ public class HashSet<T> extends AbstractCollection<T> implements Set<T> {
 	private List<T> [] hashTable;
 	private float factor;
 	private class HashSetIterator implements Iterator<T> {
-  //TODO
+		Iterator <T> it;
+		int totalCounter = 0;
+		int listCounter = 0;
+		int arrCounter = 0;
+		boolean flNext = false;
+		
 		@Override
 		public boolean hasNext() {
-			// TODO Auto-generated method stub
-			return false;
+			return totalCounter < size;
 		}
 
 		@Override
 		public T next() {
-			// TODO Auto-generated method stub
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
 			return null;
 		}
+		
 		@Override
 		public void remove() {
-			//TODO
+			if (!flNext) {
+				throw new IllegalStateException();
+			}
+			if (hashTable[listCounter] != null) {
+				it.remove();
+				size--;
+				totalCounter--;
+				if (hashTable[listCounter].isEmpty()) {
+					hashTable[listCounter] = null;
+				}
+			}
+			flNext = false;
 		}
 	}
 	@SuppressWarnings("unchecked")
@@ -57,8 +76,6 @@ public class HashSet<T> extends AbstractCollection<T> implements Set<T> {
 			list.add(element);
 			size++;
 		}
-		
-
 		return res;
 	}
 
@@ -91,13 +108,8 @@ public class HashSet<T> extends AbstractCollection<T> implements Set<T> {
 				}
 			}
 		}
-		
 		return res;
 	}
-
-	
-
-	
 
 	@Override
 	public boolean contains(T pattern) {
@@ -111,25 +123,6 @@ public class HashSet<T> extends AbstractCollection<T> implements Set<T> {
 
 	@Override
 	public Iterator<T> iterator() {
-		
 		return new HashSetIterator();
 	}
-	//FIXME The following method is only for initial test
-	//after HashTableIterator implementation is done the method should be removed
-	@Override
-	public T[] toArray(T[] ar) {
-		if (ar.length < size) {
-			ar = Arrays.copyOf(ar, size);
-		}
-		int index = 0;
-		for (List<T> list: hashTable) {
-			if (list != null) {
-				for(T obj: list) {
-					ar[index++] = obj;
-				}
-			}
-		}
-		return ar;
-	}
-
 }
